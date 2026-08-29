@@ -234,7 +234,7 @@
   .angle-path {
     fill: none;
     stroke: var(--primary);
-    stroke-width: 6;
+    stroke-width: 3;
     stroke-linecap: round;
     stroke-linejoin: round;
     marker-end: url(#arrow);
@@ -318,6 +318,37 @@
     .visual { min-height: 520px; }
     svg { min-height: 420px; }
   }
+  
+  .input-wrap {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.input-wrap input {
+  padding-right: 75px; /* Dành khoảng trống cho ô chọn đơn vị */
+}
+
+.unit-select {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 38px;
+  border: 1px solid #d4deed;
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  padding: 0 6px;
+  outline: none;
+}
+
+.unit-select:focus {
+  border-color: var(--primary);
+}
 </style>
 </head>
 <body>
@@ -331,13 +362,16 @@
     <section class="controls">
       <div class="control-title">Bảng điều khiển</div>
 
-      <div>
-        <label for="angleInput">Nhập số đo góc</label>
-        <div class="input-wrap">
-          <input id="angleInput" type="number" step="any" value="60" aria-label="Nhập số đo góc">
-          <span class="degree">°</span>
-        </div>
-      </div>
+        <div>
+		  <label for="angleInput">Nhập số đo góc</label>
+		  <div class="input-wrap">
+			<input id="angleInput" type="text" value="60" aria-label="Nhập số đo góc">
+			<select id="unitSelect" class="unit-select" aria-label="Đơn vị góc">
+			  <option value="deg">°</option>
+			  <option value="rad">rad</option>
+			</select>
+		  </div>
+		</div>
 
       <div class="buttons">
         <button id="animateBtn">▶ Minh họa</button>
@@ -381,7 +415,7 @@
             </marker>
             <marker id="arrow" markerWidth="5" markerHeight="5" refX="5" refY="5"
         orient="auto" markerUnits="strokeWidth">
-  <path d="M0,0 L3,5 L0,8 Z" fill="#2563eb"></path>
+  <path d="M0,2 L3,5 L0,8 Z" fill="#2563eb"></path>
 </marker>
           </defs>
 
@@ -589,15 +623,38 @@
     rotationLabel.textContent = "Tia đang chờ quay...";
     animateBtn.disabled = false;
   }
+  
+function readAngle() {
+  let raw = input.value.trim().toLowerCase();
+  
+  if (!raw) return 0;
 
-  function readAngle() {
-    const value = Number(input.value);
-    if (!Number.isFinite(value)) {
-      input.value = "60";
-      return 60;
+  // Xử lý chuỗi chứa "pi" (ví dụ: pi, 2pi, pi/2, -1.5pi)
+  let val = 0;
+  if (raw.includes("pi")) {
+    let replaced = raw.replace(/pi/g, Math.PI.toString());
+    try {
+      // Cho phép tính toán các biểu thức đơn giản như 2*Math.PI hoặc Math.PI/2
+      replaced = replaced.replace(/(\d)(Math\.PI)/g, "$1*$2"); 
+      val = Function(`"use strict"; return (${replaced})`)();
+    } catch (e) {
+      val = NaN;
     }
-    return value;
+  } else {
+    val = Number(raw);
   }
+
+  if (!Number.isFinite(val)) {
+    return 0;
+  }
+
+  // Nếu đơn vị đang chọn là Radian -> Quy đổi sang Độ để vẽ
+  if (unitSelect.value === "rad") {
+    return val * (180 / Math.PI);
+  }
+
+  return val; // Nếu là Độ
+}
 
   function animateAngle(targetAngle) {
     const token = ++runToken;
@@ -669,14 +726,16 @@
         animationId = null;
         currentAngleEl.textContent = `${fmt(targetAngle)}°`;
         updateTurnInfo(targetAngle);
-
+        setFinalRay(targetAngle, true);
         positionAngleLabel(targetAngle);
         angleLabel.textContent = `${fmt(targetAngle)}°`;
 
         statusEl.textContent = "Hoàn thành";
         rotationLabel.textContent =
           targetAngle > 0
-
+            ? "✓ Tia cuối sau khi quay ngược chiều kim đồng hồ"
+            : "✓ Tia cuối sau khi quay theo chiều kim đồng hồ";
+        animateBtn.disabled = false;
       }
     }
 
@@ -700,6 +759,68 @@
   // Trạng thái ban đầu: hiển thị tia Ox nhưng chưa có tia cuối.
   resetVisual();
 })();
+
+	const unitSelect = document.getElementById("unitSelect");
+	let currentUnit = "deg"; // "deg" hoặc "rad"
+	
+	function readAngle() {
+	  let raw = input.value.trim().toLowerCase();
+	  
+	  if (!raw) return 0;
+
+	  // Xử lý chuỗi chứa "pi" (ví dụ: pi, 2pi, pi/2, -1.5pi)
+	  let val = 0;
+	  if (raw.includes("pi")) {
+		let replaced = raw.replace(/pi/g, Math.PI.toString());
+		try {
+		  // Cho phép tính toán các biểu thức đơn giản như 2*Math.PI hoặc Math.PI/2
+		  replaced = replaced.replace(/(\d)(Math\.PI)/g, "$1*$2"); 
+		  val = Function(`"use strict"; return (${replaced})`)();
+		} catch (e) {
+		  val = NaN;
+		}
+	  } else {
+		val = Number(raw);
+	  }
+
+	  if (!Number.isFinite(val)) {
+		return 0;
+	  }
+
+	  // Nếu đơn vị đang chọn là Radian -> Quy đổi sang Độ để vẽ
+	  if (unitSelect.value === "rad") {
+		return val * (180 / Math.PI);
+	  }
+
+	  return val; // Nếu là Độ
+	}
+	
+	unitSelect.addEventListener("change", () => {
+	  const newUnit = unitSelect.value;
+	  const raw = input.value.trim().toLowerCase();
+
+	  if (raw !== "") {
+		let numericVal = 0;
+		if (raw.includes("pi")) {
+		  let replaced = raw.replace(/pi/g, Math.PI.toString()).replace(/(\d)(Math\.PI)/g, "$1*$2");
+		  try { numericVal = Function(`"use strict"; return (${replaced})`)(); } catch(e) { numericVal = 0; }
+		} else {
+		  numericVal = Number(raw) || 0;
+		}
+
+		// Chuyển đổi giá trị hiển thị trong ô Input
+		if (currentUnit === "deg" && newUnit === "rad") {
+		  const radVal = numericVal * (Math.PI / 180);
+		  // Hiển thị dạng bội số của PI nếu đẹp, hoặc số thập phân
+		  input.value = Number((radVal / Math.PI).toFixed(4)) + "pi";
+		} else if (currentUnit === "rad" && newUnit === "deg") {
+		  const degVal = numericVal * (180 / Math.PI);
+		  input.value = fmt(degVal);
+		}
+	  }
+
+	  currentUnit = newUnit;
+	});
 </script>
 </body>
 </html>
