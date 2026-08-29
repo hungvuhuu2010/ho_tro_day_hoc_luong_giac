@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minh họa góc lượng giác</title>
+<style>
+  * { box-sizing: border-box; }
+  :root {
+    --bg: #eef4ff;
+    --panel: #ffffff;
+    --ink: #172033;
+    --muted: #657089;
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --accent: #f97316;
+    --grid: #dbe5f4;
+    --axis: #657089;
+    --success: #15803d;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    color: var(--ink);
+    background: linear-gradient(135deg, #eaf2ff, #f8fbff 55%, #edf7ff);
+  }
+
+  .app {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+  }
+
+  header {
+    padding: 18px 28px;
+    background: rgba(255,255,255,.92);
+    border-bottom: 1px solid #dce5f2;
+    box-shadow: 0 3px 14px rgba(30, 64, 175, .08);
+    text-align: center;
+  }
+
+  header h1 {
+    margin: 0;
+    font-size: clamp(24px, 3vw, 36px);
+    letter-spacing: -.5px;
+  }
+
+  header p {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  main {
+    width: min(1500px, 96vw);
+    margin: 18px auto;
+    display: grid;
+    grid-template-columns: minmax(270px, 330px) 1fr;
+    gap: 18px;
+    min-height: 0;
+  }
+
+  .controls {
+    background: var(--panel);
+    border: 1px solid #dce5f2;
+    border-radius: 20px;
+    padding: 22px;
+    box-shadow: 0 12px 35px rgba(30,64,175,.10);
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+  }
+
+  .control-title {
+    font-weight: 800;
+    font-size: 19px;
+  }
+
+  label {
+    font-weight: 700;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .input-wrap {
+    position: relative;
+  }
+
+  input {
+    width: 100%;
+    height: 52px;
+    border: 2px solid #d4deed;
+    border-radius: 13px;
+    padding: 0 48px 0 15px;
+    font-size: 21px;
+    font-weight: 700;
+    outline: none;
+    color: var(--ink);
+    transition: .2s;
+  }
+
+  input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+  }
+
+  .degree {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--muted);
+  }
+
+  .buttons {
+    display: grid;
+    gap: 10px;
+  }
+
+  button {
+    border: 0;
+    border-radius: 13px;
+    min-height: 50px;
+    padding: 0 15px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s, opacity .15s;
+  }
+
+  button:hover { transform: translateY(-1px); }
+  button:active { transform: translateY(1px); }
+
+  #animateBtn {
+    color: white;
+    background: linear-gradient(135deg, var(--primary), #4f46e5);
+    box-shadow: 0 8px 18px rgba(37,99,235,.23);
+  }
+
+  #resetBtn {
+    color: #334155;
+    background: #edf2f8;
+  }
+
+  button:disabled { opacity: .55; cursor: default; transform: none; }
+
+  .stats {
+    display: grid;
+    gap: 10px;
+  }
+
+  .stat {
+    background: #f6f9fd;
+    border: 1px solid #e3eaf4;
+    border-radius: 13px;
+    padding: 11px 13px;
+  }
+
+  .stat-label {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .stat-value {
+    font-size: 17px;
+    font-weight: 800;
+  }
+
+  .explain {
+    margin-top: auto;
+    padding: 13px 14px;
+    border-radius: 13px;
+    background: #eff6ff;
+    border-left: 4px solid var(--primary);
+    line-height: 1.45;
+    font-size: 14px;
+  }
+
+  .visual {
+    min-width: 0;
+    background: var(--panel);
+    border: 1px solid #dce5f2;
+    border-radius: 20px;
+    box-shadow: 0 12px 35px rgba(30,64,175,.10);
+    display: grid;
+    grid-template-rows: 1fr auto;
+    overflow: hidden;
+    min-height: 600px;
+  }
+
+  .canvas-wrap {
+    min-height: 0;
+    position: relative;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(37,99,235,.035), transparent 42%),
+      #fbfdff;
+  }
+
+  svg {
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+    display: block;
+    user-select: none;
+  }
+
+  .grid-circle { fill: none; stroke: var(--grid); stroke-width: 1; }
+  .grid-line { stroke: var(--grid); stroke-width: 1; stroke-dasharray: 4 7; }
+  .axis { stroke: var(--axis); stroke-width: 2.2; }
+  .axis-label { font-size: 18px; font-weight: 800; fill: #475569; }
+  .origin-label { font-size: 16px; font-weight: 800; fill: #334155; }
+
+  .start-ray {
+    stroke: #94a3b8;
+    stroke-width: 3;
+    stroke-dasharray: 7 7;
+    opacity: .9;
+  }
+
+  .final-ray {
+    stroke: var(--accent);
+    stroke-width: 6;
+    stroke-linecap: round;
+    filter: drop-shadow(0 3px 4px rgba(249,115,22,.22));
+  }
+
+  .angle-path {
+    fill: none;
+    stroke: var(--primary);
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    marker-end: url(#arrow);
+  }
+
+  .angle-label-bg {
+    fill: white;
+    stroke: #d7e1ee;
+    stroke-width: 1.5;
+    opacity: .96;
+  }
+
+  .angle-label {
+    font-size: 20px;
+    font-weight: 900;
+    fill: #1d4ed8;
+    text-anchor: middle;
+  }
+
+  .rotation-label {
+    font-size: 17px;
+    font-weight: 800;
+    fill: #475569;
+    text-anchor: middle;
+  }
+
+  .tip-dot {
+    fill: var(--accent);
+    stroke: white;
+    stroke-width: 4;
+  }
+
+  .visual-bottom {
+    padding: 15px 20px 18px;
+    border-top: 1px solid #e2e8f0;
+    background: rgba(255,255,255,.96);
+  }
+
+  .concept {
+    font-size: 17px;
+    line-height: 1.45;
+  }
+
+  .concept strong { color: var(--primary-dark); }
+
+  .legend {
+    margin-top: 9px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 650;
+  }
+
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .blue { background: var(--primary); }
+  .orange { background: var(--accent); }
+  .gray { background: #94a3b8; }
+
+  footer {
+    padding: 10px;
+    text-align: center;
+    color: #7a879b;
+    font-size: 12px;
+  }
+
+  @media (max-width: 900px) {
+    main {
+      grid-template-columns: 1fr;
+    }
+    .controls { order: 2; }
+    .visual { order: 1; min-height: 600px; }
+  }
+
+  @media (max-width: 600px) {
+    header { padding: 15px; }
+    main { width: 100%; margin: 0; gap: 10px; }
+    .controls, .visual { border-radius: 0; }
+    .visual { min-height: 520px; }
+    svg { min-height: 420px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Minh họa góc lượng giác</h1>
+    <p>Quan sát tia <strong>Ox</strong> quay quanh gốc <strong>O</strong> để tạo thành tia cuối.</p>
+  </header>
+
+  <main>
+    <section class="controls">
+      <div class="control-title">Bảng điều khiển</div>
+
+      <div>
+        <label for="angleInput">Nhập số đo góc</label>
+        <div class="input-wrap">
+          <input id="angleInput" type="number" step="any" value="60" aria-label="Nhập số đo góc">
+          <span class="degree">°</span>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button id="animateBtn">▶ Minh họa</button>
+        <button id="resetBtn">↺ Đặt lại</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Góc đang quay</div>
+          <div class="stat-value" id="currentAngle">0°</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Chiều quay</div>
+          <div class="stat-value" id="direction">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Trạng thái</div>
+          <div class="stat-value" id="status">Sẵn sàng</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Số vòng quay</div>
+          <div class="stat-value" id="turns">0 vòng</div>
+        </div>
+      </div>
+
+      <div class="explain">
+        <strong>Quy ước:</strong><br>
+        Góc dương → ngược chiều kim đồng hồ.<br>
+        Góc âm → theo chiều kim đồng hồ.
+      </div>
+    </section>
+
+    <section class="visual">
+      <div class="canvas-wrap">
+        <svg id="diagram" viewBox="-420 -320 840 640" role="img"
+             aria-label="Hình minh họa góc lượng giác">
+          <defs>
+            <marker id="axisArrow" markerWidth="10" markerHeight="10" refX="8" refY="5"
+                    orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L10,5 L0,10 Z" fill="#657089"></path>
+            </marker>
+            <marker id="arrow" markerWidth="5" markerHeight="5" refX="5" refY="5"
+        orient="auto" markerUnits="strokeWidth">
+  <path d="M0,0 L3,5 L0,8 Z" fill="#2563eb"></path>
+</marker>
+          </defs>
+
+          <!-- Lưới định hướng -->
+          <circle class="grid-circle" cx="0" cy="0" r="90"></circle>
+          <circle class="grid-circle" cx="0" cy="0" r="180"></circle>
+          <circle class="grid-circle" cx="0" cy="0" r="270"></circle>
+
+          <line class="grid-line" x1="-360" y1="0" x2="360" y2="0"></line>
+          <line class="grid-line" x1="0" y1="-280" x2="0" y2="280"></line>
+
+          <!-- Hệ trục Oxy -->
+          <line class="axis" x1="-380" y1="0" x2="380" y2="0" marker-end="url(#axisArrow)"></line>
+          <line class="axis" x1="0" y1="280" x2="0" y2="-290" marker-end="url(#axisArrow)"></line>
+
+          <text class="axis-label" x="350" y="-14">x</text>
+          <text class="axis-label" x="14" y="-258">y</text>
+          <text class="origin-label" x="-25" y="27">O</text>
+
+          <!-- Tia Ox ban đầu -->
+          <line id="startRay" class="start-ray" x1="0" y1="0" x2="290" y2="0"></line>
+          <text id="startLabel" x="300" y="22" fill="#94a3b8" font-size="15" font-weight="700">tia Ox</text>
+
+          <!-- Cung góc động -->
+          <path id="anglePath" class="angle-path" d="" opacity="0"></path>
+
+          <!-- Tia đang quay / tia cuối -->
+          <line id="finalRay" class="final-ray" x1="0" y1="0" x2="0" y2="0" opacity="0"></line>
+          <circle id="tipDot" class="tip-dot" cx="0" cy="0" r="8" opacity="0"></circle>
+
+          <!-- Nhãn góc -->
+          <g id="angleLabelGroup" opacity="0">
+            <rect id="angleLabelBg" class="angle-label-bg" x="-64" y="-34" width="128" height="43" rx="12"></rect>
+            <text id="angleLabel" class="angle-label" x="0" y="-5">60°</text>
+          </g>
+
+          <text id="rotationLabel" class="rotation-label" x="0" y="70">Tia đang quay...</text>
+        </svg>
+      </div>
+
+      <div class="visual-bottom">
+        <div class="concept">
+          <strong>Góc lượng giác</strong> được xác định bởi hướng quay của tia <strong>Ox</strong>
+          quanh gốc <strong>O</strong> và vị trí của tia cuối.
+        </div>
+        <div class="legend">
+          <span><i class="dot gray"></i> Tia Ox ban đầu</span>
+          <span><i class="dot blue"></i> Cung và chiều quay</span>
+          <span><i class="dot orange"></i> Tia cuối</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>60° và 420° có cùng tia cuối nhưng khác số vòng quay; 60° và −300° có cùng tia cuối nhưng khác chiều quay.</footer>
+</div>
+
+<script>
+(() => {
+  const input = document.getElementById("angleInput");
+  const animateBtn = document.getElementById("animateBtn");
+  const resetBtn = document.getElementById("resetBtn");
+
+  const currentAngleEl = document.getElementById("currentAngle");
+  const directionEl = document.getElementById("direction");
+  const statusEl = document.getElementById("status");
+  const turnsEl = document.getElementById("turns");
+
+  const anglePath = document.getElementById("anglePath");
+  const finalRay = document.getElementById("finalRay");
+  const tipDot = document.getElementById("tipDot");
+  const angleLabelGroup = document.getElementById("angleLabelGroup");
+  const angleLabelBg = document.getElementById("angleLabelBg");
+  const angleLabel = document.getElementById("angleLabel");
+  const rotationLabel = document.getElementById("rotationLabel");
+
+  const RAY_LENGTH = 270;
+  const ARC_BASE = 82;
+  const NS_PER_DEGREE = 1000000; // chỉ dùng để tạo độ mượt, không phải đơn vị toán học
+  let animationId = null;
+  let runToken = 0;
+
+  // Định dạng số để tránh hiện các chữ số thập phân dài.
+  function fmt(n) {
+    if (Math.abs(n) < 1e-9) return "0";
+    return Number(n.toFixed(2)).toString();
+  }
+
+  function degToRad(deg) {
+    return deg * Math.PI / 180;
+  }
+
+  // Chuyển góc toán học sang tọa độ SVG:
+  // x = r*cos(theta), y = -r*sin(theta) vì trục y của SVG hướng xuống.
+  function pointAt(angleDeg, radius) {
+    const t = degToRad(angleDeg);
+    return {
+      x: radius * Math.cos(t),
+      y: -radius * Math.sin(t)
+    };
+  }
+
+  // Tạo cung/đường xoắn qua toàn bộ quá trình quay.
+  // Góc lớn hơn 360° được giữ nguyên để học sinh nhìn thấy nhiều vòng.
+  function buildAnglePath(angleDeg) {
+    const sign = Math.sign(angleDeg) || 1;
+    const absAngle = Math.abs(angleDeg);
+
+    if (absAngle < 0.001) return "";
+
+    const turns = Math.floor(absAngle / 360);
+    const remainder = absAngle % 360;
+
+    // Sau mỗi vòng, tăng nhẹ bán kính để các vòng không đè lên nhau.
+    // Với góc nhỏ, cung giữ bán kính cơ bản.
+    const samples = Math.max(30, Math.ceil(absAngle / 3));
+    const points = [];
+
+    for (let i = 0; i <= samples; i++) {
+      const p = i / samples;
+      const a = angleDeg * p;
+      const radius = ARC_BASE + Math.min(48, Math.floor(Math.abs(a) / 360) * 13);
+      points.push(pointAt(a, radius));
+    }
+
+    let d = `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
+    for (let i = 1; i < points.length; i++) {
+      d += ` L ${points[i].x.toFixed(2)} ${points[i].y.toFixed(2)}`;
+    }
+    return d;
+  }
+
+  function setFinalRay(angleDeg, visible = true) {
+    const p = pointAt(angleDeg, RAY_LENGTH);
+    finalRay.setAttribute("x2", p.x);
+    finalRay.setAttribute("y2", p.y);
+    tipDot.setAttribute("cx", p.x);
+    tipDot.setAttribute("cy", p.y);
+    finalRay.setAttribute("opacity", visible ? "1" : "0");
+    tipDot.setAttribute("opacity", visible ? "1" : "0");
+  }
+
+  function positionAngleLabel(angleDeg) {
+    const absAngle = Math.abs(angleDeg);
+    const radius = ARC_BASE + Math.min(48, Math.floor(absAngle / 360) * 13) + 30;
+    const p = pointAt(angleDeg, radius);
+
+    // Giữ nhãn trong vùng nhìn thấy.
+    const x = Math.max(-350, Math.min(350, p.x));
+    const y = Math.max(-250, Math.min(250, p.y));
+
+    angleLabelGroup.setAttribute("transform", `translate(${x} ${y})`);
+    angleLabelBg.setAttribute("x", "-70");
+    angleLabelBg.setAttribute("y", "-34");
+    angleLabelBg.setAttribute("width", "140");
+    angleLabel.textContent = `${fmt(angleDeg)}°`;
+  }
+
+  function updateTurnInfo(angleDeg) {
+    const absAngle = Math.abs(angleDeg);
+    const fullTurns = Math.floor(absAngle / 360);
+    const rem = absAngle % 360;
+
+    if (absAngle === 0) {
+      turnsEl.textContent = "0 vòng";
+      return;
+    }
+
+    if (rem < 0.01) {
+      turnsEl.textContent = `${fullTurns} vòng`;
+    } else if (fullTurns > 0) {
+      turnsEl.textContent = `${fullTurns} vòng + ${fmt(rem)}°`;
+    } else {
+      turnsEl.textContent = `${fmt(rem)}°`;
+    }
+  }
+
+  function setDirection(angleDeg) {
+    if (angleDeg > 0) {
+      directionEl.textContent = "Ngược chiều kim đồng hồ";
+    } else if (angleDeg < 0) {
+      directionEl.textContent = "Theo chiều kim đồng hồ";
+    } else {
+      directionEl.textContent = "Không quay";
+    }
+  }
+
+  function resetVisual() {
+    runToken++;
+    if (animationId !== null) {
+      cancelAnimationFrame(animationId);
+      animationId = null;
+    }
+
+    currentAngleEl.textContent = "0°";
+    directionEl.textContent = "—";
+    statusEl.textContent = "Sẵn sàng";
+    turnsEl.textContent = "0 vòng";
+
+    anglePath.setAttribute("d", "");
+    anglePath.setAttribute("opacity", "0");
+    finalRay.setAttribute("opacity", "0");
+    tipDot.setAttribute("opacity", "0");
+    angleLabelGroup.setAttribute("opacity", "0");
+    rotationLabel.textContent = "Tia đang chờ quay...";
+    animateBtn.disabled = false;
+  }
+
+  function readAngle() {
+    const value = Number(input.value);
+    if (!Number.isFinite(value)) {
+      input.value = "60";
+      return 60;
+    }
+    return value;
+  }
+
+  function animateAngle(targetAngle) {
+    const token = ++runToken;
+
+    if (animationId !== null) {
+      cancelAnimationFrame(animationId);
+      animationId = null;
+    }
+
+    // Thời gian tăng theo độ lớn góc:
+    // góc nhỏ đủ nhanh, góc lớn vẫn có thể quan sát được nhiều vòng.
+    const duration = Math.min(
+      14000,
+      Math.max(1200, 1200 + Math.abs(targetAngle) * 8)
+    );
+
+    const directionText =
+      targetAngle > 0 ? "Ngược chiều kim đồng hồ" :
+      targetAngle < 0 ? "Theo chiều kim đồng hồ" : "Không quay";
+
+    setDirection(targetAngle);
+    updateTurnInfo(targetAngle);
+    statusEl.textContent = "Đang quay...";
+    animateBtn.disabled = true;
+    resetBtn.disabled = false;
+
+    if (Math.abs(targetAngle) < 0.0001) {
+      currentAngleEl.textContent = "0°";
+      statusEl.textContent = "Hoàn thành";
+      anglePath.setAttribute("opacity", "0");
+      setFinalRay(0, true);
+      angleLabelGroup.setAttribute("opacity", "1");
+      positionAngleLabel(0);
+      rotationLabel.textContent = "Góc 0°";
+      animateBtn.disabled = false;
+      return;
+    }
+
+    const startTime = performance.now();
+
+    function frame(now) {
+      if (token !== runToken) return;
+
+      const raw = Math.min(1, (now - startTime) / duration);
+
+      // Ease-in-out: bắt đầu/đổi chiều mềm, giữa chuyển động đều.
+      const eased = raw < 0.5
+        ? 2 * raw * raw
+        : 1 - Math.pow(-2 * raw + 2, 2) / 2;
+
+      const current = targetAngle * eased;
+
+      currentAngleEl.textContent = `${fmt(current)}°`;
+      updateTurnInfo(current);
+      anglePath.setAttribute("d", buildAnglePath(current));
+      anglePath.setAttribute("opacity", current === 0 ? "0" : "1");
+      setFinalRay(current, true);
+      angleLabelGroup.setAttribute("opacity", "1");
+      positionAngleLabel(current);
+
+      rotationLabel.textContent =
+        targetAngle > 0
+          ? "↺ Đang quay ngược chiều kim đồng hồ"
+          : "↻ Đang quay theo chiều kim đồng hồ";
+
+      if (raw < 1) {
+        animationId = requestAnimationFrame(frame);
+      } else {
+        animationId = null;
+        currentAngleEl.textContent = `${fmt(targetAngle)}°`;
+        updateTurnInfo(targetAngle);
+
+        positionAngleLabel(targetAngle);
+        angleLabel.textContent = `${fmt(targetAngle)}°`;
+
+        statusEl.textContent = "Hoàn thành";
+        rotationLabel.textContent =
+          targetAngle > 0
+
+      }
+    }
+
+    animationId = requestAnimationFrame(frame);
+  }
+
+  animateBtn.addEventListener("click", () => {
+    const angle = readAngle();
+    animateAngle(angle);
+  });
+
+  resetBtn.addEventListener("click", resetVisual);
+
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      const angle = readAngle();
+      animateAngle(angle);
+    }
+  });
+
+  // Trạng thái ban đầu: hiển thị tia Ox nhưng chưa có tia cuối.
+  resetVisual();
+})();
+</script>
+</body>
+</html>
