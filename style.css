@@ -1,0 +1,500 @@
+/* --- Reset & Biến hệ thống --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --accent-color: #f97316;
+    --success-color: #16a34a;
+    --warning-color: #ca8a04;
+    --danger-color: #dc2626;
+    --bg-color: #f8fafc;
+    --panel-bg: #ffffff;
+    --border-color: #cbd5e1;
+    --text-color: #1e293b;
+    --text-light: #64748b;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+}
+
+/* --- Bố cục tổng thể --- */
+.app, .app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+header, .app-header {
+    background-color: var(--panel-bg);
+    border-bottom: 1px solid var(--border-color);
+    padding: 12px 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+header h1, .app-header h1 {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-weight: 700;
+}
+
+header p, .app-header p {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: 4px;
+}
+
+/* --- Điều hướng Tab ở Header --- */
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.tab-btn {
+    background: #e2e8f0;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 2px 4px rgba(37,99,235,0.2);
+}
+
+main, .app-main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Cấu trúc thẻ Tab Content */
+.tab-content {
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+.tab-content.active {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.layout {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+/* --- Bảng điều khiển (Bên trái) --- */
+.controls, .control-panel {
+    width: 360px;
+    background-color: var(--panel-bg);
+    border-right: 1px solid var(--border-color);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.02);
+    z-index: 5;
+}
+
+.control-title, .panel-section h3 {
+    font-size: 0.95rem;
+    color: var(--text-color);
+    border-bottom: 2px solid var(--bg-color);
+    padding-bottom: 6px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-light);
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Biểu mẫu và Input */
+.input-wrap, .expression-wrapper {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0 8px;
+}
+
+input[type="text"], input[type="number"], select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    background: #fff;
+    color: var(--text-color);
+}
+
+.input-wrap input[type="text"] {
+    border: none;
+    padding: 8px 0;
+}
+
+input[type="text"]:focus, input[type="number"]:focus, select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.unit-select {
+    width: auto;
+    border: none;
+    background: transparent;
+    font-weight: bold;
+    color: var(--primary-color);
+    cursor: pointer;
+}
+
+input[type="range"] {
+    width: 100%;
+    accent-color: var(--primary-color);
+    cursor: pointer;
+}
+
+/* Nút góc đặc biệt Presets */
+.preset-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+.presets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+.btn-preset {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: background 0.15s;
+}
+
+.btn-preset:hover {
+    background: #e2e8f0;
+}
+
+/* Các Nút Bấm Tương Tác */
+.btn {
+    padding: 9px 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background-color 0.2s, transform 0.1s;
+    min-height: 38px;
+    width: 100%;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.buttons {
+    display: flex;
+    gap: 8px;
+}
+
+#animateBtn, .btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+#animateBtn:hover, .btn-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+#resetBtn, .btn-secondary {
+    background-color: #e2e8f0;
+    color: var(--text-color);
+}
+
+#resetBtn:hover, .btn-secondary:hover {
+    background-color: #cbd5e1;
+}
+
+.btn-toggle {
+    background: #eff6ff;
+    color: var(--primary-hover);
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+}
+
+.btn-toggle:hover {
+    background: #dbeafe;
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #15803d;
+}
+
+/* --- Khối Hiển Thị Thông Số & Trạng Thái --- */
+.stats {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.stat {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 8px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat.highlight {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.stat-label {
+    color: var(--text-light);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.stat-value {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.trig-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.explain {
+    padding: 10px;
+    border-radius: 6px;
+    background: #eff6ff;
+    border-left: 3px solid var(--primary-color);
+    font-size: 0.75rem;
+    color: var(--text-color);
+    line-height: 1.4;
+}
+
+/* --- Đồ Thị & Mặt Phẳng Tọa Độ (Bên Phải) --- */
+.visual, .graph-viewport {
+    flex: 1;
+    position: relative;
+    background-color: #ffffff;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 300px;
+    min-width: 300px;
+}
+
+.canvas-wrap {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+svg, #diagram, #svgT1, #coordinate-system {
+    width: 100%;
+    height: 100%;
+    display: block;
+    user-select: none;
+}
+
+/* Các nét vẽ trên SVG */
+.axis-label { font-size: 16px; font-weight: 700; fill: #475569; }
+.origin-label { font-size: 14px; font-weight: 700; fill: #334155; }
+.sub-label { font-size: 12px; font-weight: 600; fill: #94a3b8; }
+.m-label { font-size: 16px; font-weight: 800; fill: var(--accent-color); }
+.proj-label { font-size: 12px; font-weight: 700; }
+
+#labelH { text-anchor: middle; fill: #ea580c; }
+#labelK { fill: var(--primary-color); }
+
+.grid-circle { fill: none; stroke: #e2e8f0; stroke-width: 1.5; }
+.grid-line { stroke: #e2e8f0; stroke-dasharray: 4 4; }
+.axis { stroke: #64748b; stroke-width: 2; }
+.start-ray { stroke: #94a3b8; stroke-width: 2.5; stroke-dasharray: 6 6; }
+.final-ray { stroke: var(--accent-color); stroke-width: 4; stroke-linecap: round; }
+.angle-path { fill: none; stroke: var(--primary-color); stroke-width: 2.5; marker-end: url(#arrow); }
+.angle-label-bg { fill: white; stroke: #cbd5e1; }
+.angle-label { font-size: 16px; font-weight: 800; fill: var(--primary-hover); text-anchor: middle; }
+.rotation-label { font-size: 14px; font-weight: 700; fill: #475569; text-anchor: middle; }
+.tip-dot { fill: var(--accent-color); stroke: white; stroke-width: 2.5; }
+.point-m-label { font-size: 16px; font-weight: 800; fill: var(--accent-color); }
+
+.cursor-coords {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--border-color);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-family: monospace;
+    pointer-events: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.visual-bottom {
+    padding: 10px 16px;
+    border-top: 1px solid var(--border-color);
+    background: #fff;
+    font-size: 0.8rem;
+}
+
+footer {
+    text-align: center;
+    padding: 8px;
+    color: var(--text-light);
+    font-size: 0.75rem;
+    border-top: 1px solid var(--border-color);
+    background: var(--panel-bg);
+}
+
+/* Utility ẩn phần tử */
+.hidden {
+    display: none !important;
+}
+
+/* --- Cảnh Báo Xoay Ngang Màn Hình (Di Động) --- */
+.rotate-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #ffffff;
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.rotate-content {
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-color);
+}
+
+.rotate-content h2 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    color: var(--text-color);
+}
+
+.rotate-content p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    line-height: 1.4;
+}
+
+@keyframes pulseRotate {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(-90deg) scale(1.1); }
+}
+
+/* --- RESPONSIVE TRÊN THIẾT BỊ DI ĐỘNG & TABLET --- */
+@media screen and (max-width: 900px) {
+    main, .app-main, .tab-content.active, .layout {
+        flex-direction: column;
+    }
+
+    .controls, .control-panel {
+        width: 100%;
+        max-height: 42vh;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .visual, .graph-viewport {
+        flex: 1;
+        min-height: 250px;
+    }
+}
+
+/* Hiển thị màn hình xoay khi thiết bị dọc */
+@media screen and (max-width: 1024px) and (orientation: portrait) {
+    .rotate-overlay, .rotate-warning {
+        display: flex;
+    }
+}
