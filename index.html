@@ -3,23 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Minh họa góc lượng giác & Giá trị lượng giác</title>
+  <title>HỖ TRỢ DẠY HỌC KHÁI NIỆM GÓC LƯỢNG GIÁC</title>
   
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
+  <!-- KaTeX CSS & JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" defer></script>	
 </head>
 <body>
   <div class="app">
     <header>
-      <h1>MINH HỌA GÓC LƯỢNG GIÁC & GIÁ TRỊ LƯỢNG GIÁC</h1>
+      
+	  <h1>HỖ TRỢ DẠY HỌC KHÁI NIỆM GÓC LƯỢNG GIÁC</h1>
 	  <p>Tác giả: Vũ Hữu Hùng, trường THPT Nguyễn Trãi - Thường Tín</p>
+	  <button id="fullscreen-btn" class="fullscreen-btn" title="Toàn màn hình">
+				⛶
+	  </button>
       <!-- Thanh chuyển Tab -->
-      <nav class="tabs">
-        <button class="tab-btn active" data-tab="tab1">Thẻ 1: Nửa đường tròn (0° - 180°)</button>
-        <button class="tab-btn" data-tab="tab2">Thẻ 2: Góc lượng giác tổng quát</button>
-      </nav>
+	  
     </header>
 
+	<nav class="tabs">
+        <button class="tab-btn active" data-tab="tab1">Góc 0° đến 180°</button>
+        <button class="tab-btn" data-tab="tab2">Góc lượng giác</button>
+		<button class="tab-btn" data-tab="tab3">⚡ Thách thức bảng GTLG đặc biệt</button>
+    </nav>
     <main>
       <!-- ================= THẺ 1: NỬA ĐƯỜNG TRÒN ================= -->
       <section id="tab1" class="tab-content active">
@@ -45,16 +54,12 @@
               <button class="btn-preset" data-angle="180">180°</button>
             </div>
 			<!-- Nút Toggle ẩn/hiện giá trị chân hình chiếu -->
-			<button id="toggleProjBtn" class="btn-toggle">Hiện tọa độ x, y</button>
+			<button id="toggleProjBtn" class="btn-toggle">📍 Hiện tọa độ x, y</button>
 
 			<!-- Nút Toggle hiện giá trị lượng giác -->
 			<button id="toggleTrigBtn" class="btn-toggle">👁️ Hiện giá trị lượng giác</button>
 			
 			<div class="stats">
-			  <div class="stat highlight">
-				<div class="stat-label">Tọa độ M(x; y)</div>
-				<div class="stat-value" id="coordM">M(0.50, 0.87)</div>
-			  </div>
 
 			  <!-- Bọc các giá trị sin, cos, tan, cot trong khối có thể ẩn/hiện -->
 			  <div id="trigBlock" class="trig-block hidden">
@@ -118,13 +123,13 @@
 				</g>
 				
                 <!-- Bán kính OM -->
-                <line id="radiusOM" x1="0" y1="0" x2="90" y2="-155.88" stroke="#f97316" stroke-width="4"></line>
+                <line id="radiusOM" x1="0" y1="0" x2="90" y2="-155.88" stroke="#f97316" stroke-width="2"></line>
 
                 <!-- Cung chỉ góc α -->
                 <path id="arcT1" fill="none" stroke="#2563eb" stroke-width="2"></path>
 
                 <!-- Điểm M -->
-                <circle id="dotM" cx="90" cy="-155.88" r="7" fill="#f97316" stroke="#fff" stroke-width="2"></circle>
+                <circle id="dotM" cx="90" cy="-155.88" r="5" fill="#f97316" stroke="#fff" stroke-width="2"></circle>
                 <text id="labelM" x="100" y="-165" class="m-label">M</text>
               </svg>
             </div>
@@ -217,6 +222,101 @@
           </div>
         </div>
       </section>
+	  
+	  <!-- ================= THẺ 3: KIỂM TRA PHẢN XẠ ================= -->
+	<section id="tab3" class="tab-content">
+	  <div class="layout">
+		<div class="controls">
+
+		  <!-- Ghi danh -->
+		  <div id="quizJoinPanel">
+			<div class="quiz-card">
+			  <h3>Ghi danh</h3>
+			  <label for="quizNameInput">Tên học sinh</label>
+			  <input id="quizNameInput" type="text" maxlength="40" placeholder="Nhập họ và tên">
+
+			  <label for="quizTimeSelect">Chế độ tính giờ</label>
+			  <select id="quizTimeSelect" class="unit-select">
+				<option value="10">10 giây / câu</option>
+				<option value="20">20 giây / câu</option>
+				<option value="0">Không giới hạn thời gian</option>
+			  </select>
+
+			  <button id="quizStartBtn" class="quiz-main-btn">▶ Bắt đầu</button>
+			  <div class="quiz-rule">
+				Trả lời đúng: <strong>+1 điểm</strong> · Trả lời sai hoặc hết giờ: <strong>0 điểm</strong>.<br>
+				Đạt <strong>20 điểm</strong> để hoàn thành lượt chơi.
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Đang chơi -->
+		  <div id="quizGamePanel" class="hidden">
+
+		  <!-- TÊN + ĐIỂM -->
+		  <div class="quiz-student-score">
+
+			<div class="quiz-student">
+			  👤 <span id="quizStudentName"></span>
+			  
+			</div>
+
+			<div class="quiz-score-highlight">
+			  <span class="quiz-small-label">ĐIỂM</span>
+			  <strong id="quizScore">0/20</strong>
+			</div>
+
+
+		  </div>
+
+		  <!-- THÔNG TIN CÂU + THỜI GIAN -->
+		  <div class="quiz-score-row">
+
+			<div>
+			  <span class="quiz-small-label">Câu</span>
+			  <strong id="quizQuestionNo">Câu 1</strong>
+			</div>
+
+			<div>
+			  <span class="quiz-small-label">Thời gian</span>
+			  <strong id="quizTimer">Không giới hạn</strong>
+			</div>
+
+		  </div>
+
+		  <button id="quizResetBtn" class="btn-toggle">
+			↺ Kết thúc lượt chơi
+		  </button>
+
+		</div>
+
+		  <!-- Kết quả -->
+		  <div id="quizResultPanel" class="hidden">
+			<div class="quiz-card quiz-finish-card">
+			  <div class="quiz-trophy">🏆</div>
+			  <h3>Hoàn thành!</h3>
+			  <p>Học sinh: <strong id="quizResultName"></strong></p>
+			  <div class="quiz-final-score" id="quizFinalScore">20/20</div>
+			  <p>Chúc mừng em đã đạt 20 điểm.</p>
+			  <button id="quizStartAgainBtn" class="quiz-main-btn">↻ Chơi lượt mới</button>
+			</div>
+		  </div>
+		</div>
+
+		<div class="visual">
+		  <div class="quiz-board">
+			<div class="quiz-board-title">Giá trị lượng giác — Góc đặc biệt 0° đến 180°</div>
+			<div id="quizQuestion" class="quiz-question">
+			 
+			</div>
+			<div id="quizOptions" class="quiz-options"></div>
+			<div id="quizFeedback" class="quiz-feedback"></div>
+	
+		  </div>
+		</div>
+	  </div>
+	</section>
+
     </main>
 
     <footer>Ứng dụng hỗ trợ học tập - Đại số & Lượng giác</footer>

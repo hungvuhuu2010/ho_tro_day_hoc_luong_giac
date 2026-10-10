@@ -37,15 +37,18 @@ body {
 }
 
 header, .app-header {
-    background-color: var(--panel-bg);
+    background: var(--panel-bg);
     border-bottom: 1px solid var(--border-color);
-    padding: 12px 16px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    padding: 8px 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     z-index: 10;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+}
+
+.header-content {
+    flex: 1;
     text-align: center;
 }
 
@@ -68,7 +71,7 @@ header p, .app-header p {
 /* --- Điều hướng Tab ở Header --- */
 .tabs {
     display: flex;
-    justify-content: center;
+    justify-content: justify;
     gap: 8px;
     margin-top: 8px;
 }
@@ -377,7 +380,7 @@ svg, #diagram, #svgT1, #coordinate-system {
 .axis-label { font-size: 16px; font-weight: 700; fill: #475569; }
 .origin-label { font-size: 14px; font-weight: 700; fill: #334155; }
 .sub-label { font-size: 12px; font-weight: 600; fill: #94a3b8; }
-.m-label { font-size: 16px; font-weight: 800; fill: var(--accent-color); }
+.m-label { font-size: 16px; font-weight: 500; fill: var(--accent-color); }
 .proj-label { font-size: 12px; font-weight: 700; }
 
 #labelH { text-anchor: middle; fill: #ea580c; }
@@ -497,4 +500,270 @@ footer {
     .rotate-overlay, .rotate-warning {
         display: flex;
     }
+}
+
+/* ================= CSS BỔ SUNG CHO THẺ 3 - KIỂM TRA PHẢN XẠ ================= */
+.quiz-card,
+.quiz-board {
+  background: #ffffff;
+  border: 1px solid #dbe3ef;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
+}
+
+.quiz-card h3 {
+  margin-top: 0;
+  margin-bottom: 18px;
+}
+
+.quiz-card label {
+  display: block;
+  margin: 12px 0 6px;
+  font-weight: 700;
+}
+
+.quiz-card input,
+.quiz-card select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+.quiz-main-btn {
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 10px;
+  background: #2563eb;
+  color: white;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.quiz-rule,
+.quiz-note {
+  margin-top: 14px;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.quiz-student {
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  background: #eff6ff;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+/* ===== TÊN HỌC SINH + ĐIỂM ===== */
+
+.quiz-student-score {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: stretch;
+  margin-bottom: 12px;
+}
+
+.quiz-student-score .quiz-student {
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* Điểm nổi bật */
+.quiz-score-highlight {
+  min-width: 80px;
+  padding: 8px 14px;
+  background: #fef2f2;
+  border: 2px solid #dc2626;
+  border-radius: 10px;
+  text-align: center;
+  color: #dc2626;
+}
+
+.quiz-score-highlight .quiz-small-label {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+.quiz-score-highlight strong {
+  display: block;
+  color: #dc2626;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.quiz-score-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.quiz-score-row > div {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+}
+
+.quiz-small-label {
+  display: block;
+  color: #64748b;
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.quiz-score-row strong {
+  font-size: 17px;
+}
+
+.quiz-timer-warning {
+  font-weight: 900;
+  text-decoration: underline;
+}
+
+.quiz-board {
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.quiz-board-title {
+  text-align: center;
+  color: #64748b;
+  font-weight: 700;
+  margin-bottom: 28px;
+}
+
+.quiz-question {
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 30px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.quiz-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.quiz-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  padding: 10px 14px;
+  border: 2px solid #dbe3ef;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 20px;
+  text-align: left;
+}
+
+.quiz-option:hover:not(:disabled) {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.quiz-option:disabled {
+  cursor: default;
+}
+
+.quiz-option-letter {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e2e8f0;
+  font-weight: 500;
+}
+
+.quiz-correct {
+  border-color: #16a34a !important;
+  background: #f0fdf4 !important;
+}
+
+.quiz-wrong {
+  border-color: #dc2626 !important;
+  background: #fef2f2 !important;
+}
+
+.quiz-feedback {
+  min-height: 30px;
+  margin-top: 18px;
+  text-align: center;
+  font-weight: 800;
+}
+
+.quiz-feedback.correct {
+  color: #15803d;
+}
+
+.quiz-feedback.wrong {
+  color: #dc2626;
+}
+
+.quiz-finish-card {
+  text-align: center;
+}
+
+.quiz-trophy {
+  font-size: 56px;
+}
+
+.quiz-final-score {
+  font-size: 42px;
+  font-weight: 900;
+  margin: 12px 0;
+}
+
+@media (max-width: 760px) {
+  .quiz-options {
+    grid-template-columns: 1fr;
+  }
+
+  .quiz-question {
+    font-size: 25px;
+  }
+
+  .quiz-score-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.fullscreen-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fullscreen-btn:hover {
+    background: #e2e8f0;
 }
